@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = "./";
+
+package kitasolve_models;
+
+service kitaSolveModels {
+  rpc addSolve(Solve) returns (google.protobuf.StringValue);
+  rpc getSolve(google.protobuf.StringValue) returns (Solve); 
+  rpc searchSolve(google.protobuf.StringValue) returns (stream Solve);
+  rpc updateSolve(stream Solve) returns (google.protobuf.StringValue);
+}
+
+message Solve {
+  string id = 1;
+  string description = 2;
+  string content = 3;
+}
+
