@@ -4,7 +4,7 @@
 // 	protoc        v3.21.7
 // source: proto/kitasolve_models.proto
 
-package __
+package __ 
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
