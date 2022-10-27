@@ -4,36 +4,41 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 
 	pb "kitasolve/models/grpc"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Server struct {
-  solveMap map[string]pb.Solve // TODO: Change to db connection
+  col *mongo.Collection 
 }
 
-// Add solve to db
-func (s *Server) AddSolve(ctx context.Context, solve *pb.Solve) (*wrappers.StringValue, error) {
-  s.solveMap[solve.Id] = *solve
+func (s *Server) AddSolve(ctx context.Context, solve *pb.Solve) (*wrappers.StringValue, error) {   
+  _, err := s.col.InsertOne(context.Background(), *solve)
+  if err != nil {
+    fmt.Errorf("%v", err)
+  }
   return &wrappers.StringValue {
     Value: fmt.Sprintf("[200] Order with Id: %v  was added successfully", solve.Id), // TODO: format http code in response 
   }, status.New(codes.OK, "").Err() 
 }
 
-// Get solve from db
 func (s *Server) GetSolve(ctx context.Context, id *wrappers.StringValue) (*pb.Solve, error) {
-  if solve, ok := s.solveMap[id.Value]; ok {
-    return &solve, status.New(codes.OK, "").Err()
-  } else {
-    return nil, status.Errorf(codes.NotFound, "Solve doesn't exists: ", id)
-  }
+  var solve pb.Solve
+  cur := s.col.FindOne(context.Background(), id.Value)
+  
+  cur.Decode(&solve)
+  
+  return &solve, status.New(codes.OK, "").Err()
+  
+  // } else {
+  //   return nil, status.Errorf(codes.NotFound, "Solve doesn't exists: ", id)
+  // }
 }
 
 // Get all solves which incldue this query

@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func connectDB() *mongo.Client{
+func ConnectMongo() *mongo.Client{
   if err := godotenv.Load(); err != nil {
     log.Println("[ERROR] Env file doesn't exists")
   }
@@ -29,7 +29,7 @@ func connectDB() *mongo.Client{
   return client 
 }
 
-func disconnectDB(client *mongo.Client) {
+func DisconnectMongo(client *mongo.Client) {
   if err := client.Disconnect(context.TODO()); err != nil {
     panic(err)
   }
