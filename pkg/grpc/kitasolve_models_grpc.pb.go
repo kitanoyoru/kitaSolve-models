@@ -25,6 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type KitaSolveModelsClient interface {
 	AddSolve(ctx context.Context, in *Solve, opts ...grpc.CallOption) (*wrapperspb.StringValue, error)
 	GetSolve(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*Solve, error)
+	DeleteSolve(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
 	SearchSolve(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (KitaSolveModels_SearchSolveClient, error)
 	UpdateSolve(ctx context.Context, opts ...grpc.CallOption) (KitaSolveModels_UpdateSolveClient, error)
 }
@@ -49,6 +50,15 @@ func (c *kitaSolveModelsClient) AddSolve(ctx context.Context, in *Solve, opts ..
 func (c *kitaSolveModelsClient) GetSolve(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*Solve, error) {
 	out := new(Solve)
 	err := c.cc.Invoke(ctx, "/kitasolve_models.kitaSolveModels/getSolve", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *kitaSolveModelsClient) DeleteSolve(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error) {
+	out := new(wrapperspb.BoolValue)
+	err := c.cc.Invoke(ctx, "/kitasolve_models.kitaSolveModels/deleteSolve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -127,6 +137,7 @@ func (x *kitaSolveModelsUpdateSolveClient) CloseAndRecv() (*wrapperspb.StringVal
 type KitaSolveModelsServer interface {
 	AddSolve(context.Context, *Solve) (*wrapperspb.StringValue, error)
 	GetSolve(context.Context, *wrapperspb.StringValue) (*Solve, error)
+	DeleteSolve(context.Context, *wrapperspb.StringValue) (*wrapperspb.BoolValue, error)
 	SearchSolve(*wrapperspb.StringValue, KitaSolveModels_SearchSolveServer) error
 	UpdateSolve(KitaSolveModels_UpdateSolveServer) error
 	mustEmbedUnimplementedKitaSolveModelsServer()
@@ -141,6 +152,9 @@ func (UnimplementedKitaSolveModelsServer) AddSolve(context.Context, *Solve) (*wr
 }
 func (UnimplementedKitaSolveModelsServer) GetSolve(context.Context, *wrapperspb.StringValue) (*Solve, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSolve not implemented")
+}
+func (UnimplementedKitaSolveModelsServer) DeleteSolve(context.Context, *wrapperspb.StringValue) (*wrapperspb.BoolValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSolve not implemented")
 }
 func (UnimplementedKitaSolveModelsServer) SearchSolve(*wrapperspb.StringValue, KitaSolveModels_SearchSolveServer) error {
 	return status.Errorf(codes.Unimplemented, "method SearchSolve not implemented")
@@ -193,6 +207,24 @@ func _KitaSolveModels_GetSolve_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(KitaSolveModelsServer).GetSolve(ctx, req.(*wrapperspb.StringValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KitaSolveModels_DeleteSolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrapperspb.StringValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KitaSolveModelsServer).DeleteSolve(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kitasolve_models.kitaSolveModels/deleteSolve",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KitaSolveModelsServer).DeleteSolve(ctx, req.(*wrapperspb.StringValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,6 +290,10 @@ var KitaSolveModels_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getSolve",
 			Handler:    _KitaSolveModels_GetSolve_Handler,
+		},
+		{
+			MethodName: "deleteSolve",
+			Handler:    _KitaSolveModels_DeleteSolve_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -1,4 +1,4 @@
-module kitasolve/models
+module github.com/kitanoyoru/kitaSolve-models
 
 go 1.19
 

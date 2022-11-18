@@ -25,6 +25,10 @@ func ConnectMongo() *mongo.Client{
   if err != nil {
     panic(err)
   }
+
+  if err = client.Ping(context.Background()); err != nil {
+    panic(err)
+  }
   
   return client 
 }

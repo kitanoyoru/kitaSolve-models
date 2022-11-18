@@ -9,6 +9,7 @@ package kitasolve_models;
 service kitaSolveModels {
   rpc addSolve(Solve) returns (google.protobuf.StringValue);
   rpc getSolve(google.protobuf.StringValue) returns (Solve); 
+  rpc deleteSolve(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
   rpc searchSolve(google.protobuf.StringValue) returns (stream Solve);
   rpc updateSolve(stream Solve) returns (google.protobuf.StringValue);
 }
